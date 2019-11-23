@@ -1,24 +1,24 @@
 # Neural-networks-to-Estimate-Propensity-Scores-with-Multiple-Treatment-Levels-
 Code from "Neural networks to Estimate Propensity Scores with Multiple Treatment Levels" in the Journal of Experimental Education (Collier & Leite, in press). 
 
-############# Import training data in Python ##################
+# Import training data in Python ##################
 
 import numpy as np #import library for arrays
 data = ('train.csv')
 import pandas as pd
-# comma delimited is the default
+#comma delimited is the default
 data = pd.read_csv(data, header = 0)
 #Convert panda to numpy array
 data=data.values
 
-############# Seperate Covariates from Treatment Levels ##################
+# Seperate Covariates from Treatment Levels ##################
 
 input_values = data[:, :-1] # gather covariates from random draws
 
 target_values = data[:, [76]] ##gather true classes/treatments from the random draws
 
 
-############# Set the Hyperparameters ##################
+# Set the Hyperparameters ##################
 
 from sklearn.neural_network import MLPClassifier
 
@@ -30,30 +30,30 @@ clf = MLPClassifier(activation='relu', alpha=1e-05, batch_size='auto',
        solver='lbfgs', tol=0.0001, validation_fraction=0.1, verbose=False,
        warm_start=False)
        
-############# Train the Neural Network to the Data ################## 
+# Train the Neural Network to the Data ################## 
 
  clf.fit(input_values, target_values) 
  
  
- ############# Import Validation Data ################## 
+ # Import Validation Data ################## 
  
 import numpy as np #import library for arrays
 data = ('validation.csv')
 import pandas as pd
-# comma delimited is the default
+#comma delimited is the default
 data = pd.read_csv(data, header = 0)
 #Convert panda to numpy array
 data=data.values
  
  
- ############# Seperate Validation Covariates from Validation Treatment Levels ##################
+ # Seperate Validation Covariates from Validation Treatment Levels ##################
  
 input_values = data[:, :-1] # gather covariates from random draws
 
 target_values = data[:, [76]] ##gather true classes/treatments from the random draws
 
 
- ############# Estimate Genearlized Propensity Scores using Validation Data ##################
+ # Estimate Genearlized Propensity Scores using Validation Data ##################
 
 from sklearn.metrics import log_loss
 
@@ -64,24 +64,24 @@ cross_entropy = log_loss(target_values,test_preds) # calculate cross_entropy
 print ('test stats')
 print (cross_entropy)
 
-############# Import test data in Python ##################
+# Import test data in Python ##################
 
 import numpy as np #import library for arrays
 data = ('test.csv')
 import pandas as pd
-# comma delimited is the default
+#comma delimited is the default
 data = pd.read_csv(data, header = 0)
 #Convert panda to numpy array
 data=data.values
 
- ############# Seperate Test Covariates from Test Treatment Levels ##################
+ # Seperate Test Covariates from Test Treatment Levels ##################
  
 input_values = data[:, :-1] # gather covariates from random draws
 
 target_values = data[:, [76]] ##gather true classes/treatments from the random draws
 
  
- ############# Test the Neural Network on Test Data ################## 
+ # Test the Neural Network on Test Data ################## 
  
  from sklearn.metrics import log_loss
 
@@ -92,15 +92,12 @@ cross_entropy = log_loss(target_values,test_preds) # calculate cross_entropy
 print ('test stats')
 print (cross_entropy)
 
- ############# Save the estimated Genearlized Propensity Scores ################## 
+ # Save the estimated Genearlized Propensity Scores ################## 
  
 np.savetxt("GPS.csv", test_preds, delimiter=",")
 
-############# Now Read in data from tested neural network in R ##################
+# Now Read in data from tested neural network in R ##################
 
-#Read in data from tested neural network in R
-
-#nn_ps <- read.csv("predictions_nnet_applied_cate.csv", header = F)
 nn_ps <- read.csv("GPS.csv", header = F)
 load("Chapter6_example_SASS_TFS_data_imputed.Rdata")
 test <- imputedData
@@ -109,7 +106,7 @@ names(nn_ps)[2] <- "sameArea"
 names(nn_ps)[3] <- "otherArea"
 nn_ps <- cbind(nn_ps, imputedData)
 
-#Obtain Inverse Probability Treatment Weights for Propensity score weighting
+# Obtain Inverse Probability Treatment Weights for Propensity score weighting
 nn_ps$IPTW <- ifelse(nn_ps$Treat=="noMentor", 1/nn_ps$noMentor, 
                            ifelse(nn_ps$Treat=="sameArea", 1/nn_ps$sameArea, 1/nn_ps$otherArea))
 with(nn_ps, by(IPTW,Treat,summary))
@@ -134,7 +131,7 @@ otherArea$IPTW <- ifelse(otherArea$IPTW > quantile(otherArea$IPTW)[4],
 data <- rbind(noMentor, sameArea);data <- rbind(data, otherArea)
 nn_ps <- data
 
-#Obtain the final weight that is the multiplication of IPTW and sampling weight TFNLWGT
+# Obtain the final weight that is the multiplication of IPTW and sampling weight TFNLWGT
 nn_ps$IPTW.TFNLWGT <- with(nn_ps,IPTW*TFNLWGT)
 with(nn_ps, by(IPTW.TFNLWGT,Treat,summary))
 
@@ -145,7 +142,7 @@ nn_ps$finalWeightATE <- with(nn_ps,IPTW.TFNLWGT/
 with(nn_ps, by(finalWeightATE,Treat,summary))
 
 #=============================================================
-#estimate ATE with propensity score weighting
+# estimate ATE with propensity score weighting
 #Fdefine the design
 #school ids are provided to control for effects of clustering
 require(survey)
