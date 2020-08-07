@@ -1,5 +1,5 @@
 # Neural-networks-to-Estimate-Propensity-Scores-with-Multiple-Treatment-Levels-
-Tutorial from "A Tutorial on Artificial Neural Networks in Propensity Score Analysis" in the Journal of Experimental Education (Collier & Leite, in press). 
+From "A Tutorial on Artificial Neural Networks in Propensity Score Analysis" in the Journal of Experimental Education (Collier & Leite, in press). 
 
 # Python Code ##################
 
